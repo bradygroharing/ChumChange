@@ -104,6 +104,7 @@ class Blockchain:
         :param previous_hash: Hash of previous Block
         :return: New Block
         """
+        full_file_path = '../backups/chum_change_backup.txt'
 
         block = {
             'index': len(self.chain) + 1,
@@ -117,6 +118,9 @@ class Blockchain:
         self.current_transactions = []
 
         self.chain.append(block)
+        write_file = open(full_file_path, 'w')
+        write_file.write(str(self.chain))
+
         return block
 
     def new_transaction(self, sender: str, recipient: str, amount: int) -> int:
@@ -206,7 +210,7 @@ class Blockchain:
          """
         all_senders_in_block = []
         all_recipients_in_block = []
-        senders_wallets = {}
+        # senders_wallets = {}
         # Gets all the senders in the current transaction
         for i in range(len(self.current_transactions)) :
             values = self.current_transactions[i]
@@ -216,27 +220,34 @@ class Blockchain:
                 all_senders_in_block.append(current_sender)
                 all_recipients_in_block.append(current_recipient)
 
+        blockchain.approve_current_transactions(blockchain.get_balance(all_senders_in_block))
+
+
+    def get_balance(self, users):
+        """
+         Gets the balance of all the wallets provided by the param
+
+        :param users: A list of all the senders whose balances we want
+         """
+        senders_wallets = {}
         # This is supposed to figure out how much each sender has based on how much they've sent and received
-        for i in range(len(self.chain)) :
+        for i in range(len(self.chain)):
             transactions = self.chain[i]['transactions']
             # for each transaction in each block on the chain
-            for j in range(len(transactions)) :
+            for j in range(len(transactions)):
                 current_sender = transactions[j]['sender']
                 current_amount = transactions[j]['amount']
                 current_recipient = transactions[j]['recipient']
                 # Did they get money?
-                if current_recipient in all_senders_in_block :
-                    if current_sender in senders_wallets.keys() :
+                if current_recipient in users:
+                    if current_sender in senders_wallets.keys():
                         senders_wallets[current_recipient] = senders_wallets[current_recipient] + current_amount
-                    else :
+                    else:
                         senders_wallets[current_recipient] = current_amount
                 # Did they spend money?
-                elif current_sender in all_senders_in_block:
+                elif current_sender in users:
                     senders_wallets[current_sender] = senders_wallets[current_sender] - current_amount
-        blockchain.approve_current_transactions(senders_wallets)
-
-
-
+        return senders_wallets
 
 
 
@@ -256,6 +267,20 @@ node_identifier = str(uuid4()).replace('-', '')
 # Instantiate the Blockchain
 blockchain = Blockchain()
 
+@app.route('/balance', methods=['POST'])
+def balance():
+    values = request.get_json()
+    # Check that the required fields are in the POST'ed data
+    required = ['user']
+    if not all(k in values for k in required):
+        return 'Missing value', 400
+
+    # Create a new Transaction
+    index = blockchain.get_balance(values['user'])
+
+    response = {'message': f'{index}'}
+    return jsonify(response), 201
+
 
 @app.route('/mine', methods=['GET'])
 def mine():
@@ -267,11 +292,11 @@ def mine():
 
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
-    # blockchain.new_transaction(
-    #     sender="0",
-    #     recipient=node_identifier,
-    #     amount=1,
-    # )
+    blockchain.new_transaction(
+        sender="0",
+        recipient=node_identifier,
+        amount=1,
+    )
     # print(proof)
     # Forge the new Block by adding it to the chain
     block = blockchain.new_block(proof, last_proof)
