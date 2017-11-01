@@ -1,8 +1,8 @@
 import hashlib
 import json
 from time import time
-from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
+# from typing import Any, Dict, List, Optional
+# from urllib.parse import urlparse
 from uuid import uuid4
 
 import requests
@@ -23,7 +23,7 @@ class Blockchain:
         # Create the genesis block
         self.new_block(previous_hash='1', proof=100)
 
-    def register_node(self, address: str) -> None:
+    def register_node(self, address):
         """
         Add a new node to the list of nodes
 
@@ -33,7 +33,7 @@ class Blockchain:
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
 
-    def valid_chain(self, chain: List[Dict[str, Any]]) -> bool:
+    def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid
 
@@ -46,8 +46,8 @@ class Blockchain:
 
         while current_index < len(chain):
             block = chain[current_index]
-            print(f'{last_block}')
-            print(f'{block}')
+            # print(f'{last_block}')
+            # print(f'{block}')
             print("\n-----------\n")
             # Check that the hash of the block is correct
             if block['previous_hash'] != self.hash(last_block):
@@ -62,7 +62,7 @@ class Blockchain:
 
         return True
 
-    def resolve_conflicts(self) -> bool:
+    def resolve_conflicts(self):
         """
         This is our consensus algorithm, it resolves conflicts
         by replacing our chain with the longest one in the network.
@@ -78,7 +78,7 @@ class Blockchain:
 
         # Grab and verify the chains from all the nodes in our network
         for node in neighbours:
-            response = requests.get(f'http://{node}/chain')
+            # response = requests.get(f'http://{node}/chain')
 
             if response.status_code == 200:
                 length = response.json()['length']
@@ -96,7 +96,7 @@ class Blockchain:
 
         return False
 
-    def new_block(self, proof: int, previous_hash: Optional[str]) -> Dict[str, Any]:
+    def new_block(self, proof, previous_hash):
         """
         Create a new Block in the Blockchain
 
@@ -123,7 +123,7 @@ class Blockchain:
 
         return block
 
-    def new_transaction(self, sender: str, recipient: str, amount: int) -> int:
+    def new_transaction(self, sender, recipient, amount):
         """
         Creates a new transaction to go into the next mined Block
 
@@ -141,11 +141,11 @@ class Blockchain:
         return self.last_block['index'] + 1
 
     @property
-    def last_block(self) -> Dict[str, Any]:
+    def last_block(self):
         return self.chain[-1]
 
     @staticmethod
-    def hash(block: Dict[str, Any]) -> str:
+    def hash(block):
         """
         Creates a SHA-256 hash of a Block
 
@@ -156,7 +156,7 @@ class Blockchain:
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-    def proof_of_work(self, last_proof: int) -> int:
+    def proof_of_work(self, last_proof):
         """
         Simple Proof of Work Algorithm:
          - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
@@ -170,7 +170,7 @@ class Blockchain:
         return proof
 
     @staticmethod
-    def valid_proof(last_proof: int, proof: int) -> bool:
+    def valid_proof(last_proof, proof):
         """
         Validates the Proof
 
@@ -179,7 +179,7 @@ class Blockchain:
         :return: True if correct, False if not.
         """
 
-        guess = f'{last_proof}{proof}'.encode()
+        guess = (str(last_proof) + str(proof)).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
 
@@ -278,7 +278,7 @@ def balance():
     # Create a new Transaction
     index = blockchain.get_balance(values['user'])
 
-    response = {'message': f'{index}'}
+    response = {'message': str(index)}
     return jsonify(response), 201
 
 
@@ -322,7 +322,7 @@ def new_transaction():
     # Create a new Transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
-    response = {'message': f'Transaction will be added to Block {index}'}
+    response = {'message': 'Transaction will be added to Block ' + str(index)}
     return jsonify(response), 201
 
 
