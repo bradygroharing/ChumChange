@@ -30,8 +30,8 @@ class Blockchain:
         :param address: Address of node. Eg. 'http://192.168.0.5:5000'
         """
 
-        parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
+        # parsed_url = urlparse(address)
+        # self.nodes.add(parsed_url.netloc)
 
     def valid_chain(self, chain):
         """
@@ -78,7 +78,7 @@ class Blockchain:
 
         # Grab and verify the chains from all the nodes in our network
         for node in neighbours:
-            # response = requests.get(f'http://{node}/chain')
+            response = requests.get('http:// ' + node + '/chain')
 
             if response.status_code == 200:
                 length = response.json()['length']
