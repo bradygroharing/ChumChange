@@ -1,0 +1,17 @@
+{
+  "name": "slack-integration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "chum_change.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.2",
+    "@slack/client": "^5.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,10 +1,10 @@
 // Import express and request modules
 var express = require('express');
 var request = require('request');
-var sys = require('sys')
-var exec = require('child_process').exec;
+// var sys = require('sys')
+// var exec = require('child_process').exec;
 var IncomingWebhook = require('@slack/client').IncomingWebhook;
-var child;
+// var child;
 
 // Store our app's ID and Secret. These we got from Step 1. 
 // For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
@@ -21,12 +21,12 @@ var webhook = new IncomingWebhook(url);
 
 
 // Again, we define a port we want to listen to
-const PORT=80;
+const PORT=6969;
 
 // Lets start our server
 app.listen(PORT, function () {
     //Callback triggered when server is successfully listening. Hurray!
-    console.log("LeagueWatcher is listening on port " + PORT); 
+    console.log("Chum Change is listening on port " + PORT);
 });
 
 
@@ -55,7 +55,6 @@ app.get('/oauth', function(req, res) {
                 console.log(error + "This is my own error line 47");
             } else {
                 res.json(body);
-
             }
         })
     }
@@ -65,30 +64,13 @@ app.get('/oauth', function(req, res) {
 //We'll need to figure out how to get the person who wrote the command and use that as the sender
 app.post('/pay', function(req, res) {
     res.send('Your server is up and running!');
-    
-
-    // webhook.send('Morgan just fed in this game: info info info json json json', function(err, res) {
-    // if (err) {
-    //     console.log('Error:', err);
-    // } else {
-    //     console.log('Message sent: ', res);
-    // }
-    // });
 });
 
 //This route will take in an a user and send a curl command to the ChumChange blockchain
 //We'll need to figure out how to get the person who wrote the command and use that as the user
 app.post('/balance', function(req, res) {
     res.send('Your server is up and running!');
-    
-    
-    // webhook.send('Morgan just fed in this game: info info info json json json', function(err, res) {
-    // if (err) {
-    //     console.log('Error:', err);
-    // } else {
-    //     console.log('Message sent: ', res);
-    // }
-    // });
+
 });
 
 
