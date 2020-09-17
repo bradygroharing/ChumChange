@@ -6,7 +6,7 @@ var request = require('request');
 var IncomingWebhook = require('@slack/client').IncomingWebhook;
 // var child;
 
-// Store our app's ID and Secret. These we got from Step 1. 
+// Store our app's ID and Secret. These we got from Step 1.
 // For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
 var clientId = '46378622003.176720392310';
 var clientSecret = 'f253bebb75ab7e9f01d90fe5a14b2be6';
@@ -71,6 +71,12 @@ app.post('/pay', function(req, res) {
 app.post('/balance', function(req, res) {
     res.send('Your server is up and running!');
 
+});
+
+app.post('/event', function(req, res) {
+    console.log(req);
+    let challenge = req.body.challenge;
+    res.send(challenge);
 });
 
 
