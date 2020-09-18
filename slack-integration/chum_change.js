@@ -73,8 +73,8 @@ app.post('/balance', function(req, res) {
 
 });
 
-app.post('/event', function(req, res) {
-    console.log(req.body);
+app.post('/event', function(event, res) {
+    console.log(event);
     let challenge = req.body.challenge;
     res.send(challenge);
 });
