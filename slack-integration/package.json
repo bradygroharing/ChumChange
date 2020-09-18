@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "request": "^2.88.2",
-    "@slack/client": "^5.0.2"
+    "@slack/client": "^5.0.2",
+    "@slack/events-api": "^2.3.4"
   },
   "devDependencies": {},
   "scripts": {

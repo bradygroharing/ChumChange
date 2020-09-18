@@ -4,7 +4,9 @@ var request = require('request');
 // var sys = require('sys')
 // var exec = require('child_process').exec;
 var IncomingWebhook = require('@slack/client').IncomingWebhook;
-// var child;
+const { createEventAdapter } = require('@slack/events-api');
+const slackSigningSecret = process.env.SLACK_SIGNING_SECRET;
+const slackEvents = createEventAdapter(slackSigningSecret);
 
 // Store our app's ID and Secret. These we got from Step 1.
 // For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
@@ -73,11 +75,20 @@ app.post('/balance', function(req, res) {
 
 });
 
-app.post('/event', function(event, res) {
-    console.log(event);
+app.post('/event', function(req, res) {
+    console.log(req.event);
     let challenge = req.body.challenge;
     res.send(challenge);
 });
+
+slackEvents.on('message', (event) => {
+    console.log(`Received a message event: user ${event.user} in channel ${event.channel} says ${event.text}`);
+});
+   
+(async () => {
+const server = await slackEvents.start(port);
+console.log(`Listening for events on ${server.address().port}`);
+})();
 
 
 
