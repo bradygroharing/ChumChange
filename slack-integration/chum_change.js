@@ -1,6 +1,9 @@
 // Import express and request modules
+require('dotenv').config({path: __dirname + '/.env'});
 var express = require('express');
 var request = require('request');
+const PORT=6969;
+
 // var sys = require('sys')
 // var exec = require('child_process').exec;
 var IncomingWebhook = require('@slack/client').IncomingWebhook;
@@ -9,7 +12,7 @@ const slackSigningSecret = process.env.SLACK_SIGNING_SECRET;
 const slackEvents = createEventAdapter(slackSigningSecret);
 
 // Store our app's ID and Secret. These we got from Step 1.
-// For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to  store them securely in environment variables. 
+// For this tutorial, we'll keep your API credentials right here. But for an actual app, you'll want to store them securely in environment variables. 
 var clientId = '46378622003.176720392310';
 var clientSecret = 'f253bebb75ab7e9f01d90fe5a14b2be6';
 // var token = process.env.SLACK_API_TOKEN || 'xoxp-46378622003-46427242645-178396187058-d516fa1aba91a692ffc4e431c6165a68'; //see section above on sensitive data
@@ -23,13 +26,12 @@ var webhook = new IncomingWebhook(url);
 
 
 // Again, we define a port we want to listen to
-const PORT=6969;
 
 // Lets start our server
-app.listen(PORT, function () {
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Chum Change is listening on port " + PORT);
-});
+// app.listen(PORT, function () {
+//     //Callback triggered when server is successfully listening. Hurray!
+//     console.log("Chum Change is listening on port " + PORT);
+// });
 
 
 // This route handles GET requests to our root ngrok address and responds with the same "Ngrok is working message" we used before
@@ -86,7 +88,7 @@ slackEvents.on('message', (event) => {
 });
    
 (async () => {
-const server = await slackEvents.start(port);
+const server = await slackEvents.start(PORT);
 console.log(`Listening for events on ${server.address().port}`);
 })();
 
